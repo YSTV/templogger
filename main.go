@@ -21,10 +21,12 @@ func check(err error) {
 func main() {
 	var (
 		username, password, database, host, port, device, accessToken string
+		secure                                                        bool
 	)
 
 	flag.StringVar(&username, "user", "", "InfluxDB username")
 	flag.StringVar(&password, "pass", "", "InfluxDB password")
+	flag.BoolVar(&secure, "secure", false, "InfluxDB use https?")
 	flag.StringVar(&host, "host", "localhost", "InfluxDB hostname")
 	flag.StringVar(&port, "port", "8086", "InfluxDB port")
 	flag.StringVar(&database, "db", "", "InfluxDB database")
@@ -52,8 +54,14 @@ func main() {
 		log.Fatal(err)
 	}
 
+	proto := "http"
+
+	if secure {
+		proto = "https"
+	}
+
 	c, err := client.NewHTTPClient(client.HTTPConfig{
-		Addr:     fmt.Sprintf("http://%s:%s", host, port),
+		Addr:     fmt.Sprintf("%s://%s:%s", proto, host, port),
 		Username: username,
 		Password: password,
 	})
