@@ -44,6 +44,9 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	if res.StatusCode != http.StatusOK {
+		log.Fatalf("Non-200 response from particle API: %s", http.StatusText(res.StatusCode))
+	}
 
 	var resJSON struct {
 		Result float32
